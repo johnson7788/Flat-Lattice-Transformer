@@ -1,11 +1,11 @@
 from fastNLP import cache_results
 
 
-@cache_results(_cache_fp='need_to_defined_fp',_refresh=True)
-def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedding_path=None,
-                                   only_lexicon_in_train=False,word_char_mix_embedding_path=None,
+@cache_results(_cache_fp='need_to_defined_fp', _refresh=True)
+def equip_chinese_ner_with_lexicon(datasets, vocabs, embeddings, w_list, word_embedding_path=None,
+                                   only_lexicon_in_train=False, word_char_mix_embedding_path=None,
                                    number_normalized=False,
-                                   lattice_min_freq=1,only_train_min_freq=0):
+                                   lattice_min_freq=1, only_train_min_freq=0):
     from fastNLP.core import Vocabulary
     def normalize_char(inp):
         result = []
@@ -22,26 +22,25 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
         for bi in inp:
             tmp = bi
             if tmp[0].isdigit():
-                tmp = '0'+tmp[:1]
+                tmp = '0' + tmp[:1]
             if tmp[1].isdigit():
-                tmp = tmp[0]+'0'
+                tmp = tmp[0] + '0'
 
             result.append(tmp)
         return result
 
     if number_normalized == 3:
-        for k,v in datasets.items():
-            v.apply_field(normalize_char,'chars','chars')
+        for k, v in datasets.items():
+            v.apply_field(normalize_char, 'chars', 'chars')
         vocabs['char'] = Vocabulary()
         vocabs['char'].from_dataset(datasets['train'], field_name='chars',
-                                no_create_entry_dataset=[datasets['dev'], datasets['test']])
+                                    no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
-        for k,v in datasets.items():
-            v.apply_field(normalize_bigram,'bigrams','bigrams')
+        for k, v in datasets.items():
+            v.apply_field(normalize_bigram, 'bigrams', 'bigrams')
         vocabs['bigram'] = Vocabulary()
         vocabs['bigram'].from_dataset(datasets['train'], field_name='bigrams',
-                                  no_create_entry_dataset=[datasets['dev'], datasets['test']])
-
+                                      no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
     if only_lexicon_in_train:
         print('已支持只加载在trian中出现过的词汇')
@@ -52,6 +51,7 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
         # print(result)
 
         return result
+
     from V0.utils_ import Trie
     from functools import partial
     from fastNLP.core import Vocabulary
@@ -63,12 +63,11 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
     for w in w_list:
         w_trie.insert(w)
 
-
     if only_lexicon_in_train:
         lexicon_in_train = set()
         for s in datasets['train']['chars']:
             lexicon_in_s = w_trie.get_lexicon(s)
-            for s,e,lexicon in lexicon_in_s:
+            for s, e, lexicon in lexicon_in_s:
                 lexicon_in_train.add(''.join(lexicon))
 
         print('lexicon in train:{}'.format(len(lexicon_in_train)))
@@ -77,45 +76,38 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
         for w in lexicon_in_train:
             w_trie.insert(w)
 
-
-
-
-
-
     import copy
-    for k,v in datasets.items():
-        v.apply_field(partial(get_skip_path,w_trie=w_trie),'chars','lexicons')
-        v.apply_field(copy.copy, 'chars','raw_chars')
-        v.add_seq_len('lexicons','lex_num')
-        v.apply_field(lambda x:list(map(lambda y: y[0], x)), 'lexicons', 'lex_s')
+    for k, v in datasets.items():
+        v.apply_field(partial(get_skip_path, w_trie=w_trie), 'chars', 'lexicons')
+        v.apply_field(copy.copy, 'chars', 'raw_chars')
+        v.add_seq_len('lexicons', 'lex_num')
+        v.apply_field(lambda x: list(map(lambda y: y[0], x)), 'lexicons', 'lex_s')
         v.apply_field(lambda x: list(map(lambda y: y[1], x)), 'lexicons', 'lex_e')
 
-
     if number_normalized == 1:
-        for k,v in datasets.items():
-            v.apply_field(normalize_char,'chars','chars')
+        for k, v in datasets.items():
+            v.apply_field(normalize_char, 'chars', 'chars')
         vocabs['char'] = Vocabulary()
         vocabs['char'].from_dataset(datasets['train'], field_name='chars',
-                                no_create_entry_dataset=[datasets['dev'], datasets['test']])
+                                    no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
     if number_normalized == 2:
-        for k,v in datasets.items():
-            v.apply_field(normalize_char,'chars','chars')
+        for k, v in datasets.items():
+            v.apply_field(normalize_char, 'chars', 'chars')
         vocabs['char'] = Vocabulary()
         vocabs['char'].from_dataset(datasets['train'], field_name='chars',
-                                no_create_entry_dataset=[datasets['dev'], datasets['test']])
+                                    no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
-        for k,v in datasets.items():
-            v.apply_field(normalize_bigram,'bigrams','bigrams')
+        for k, v in datasets.items():
+            v.apply_field(normalize_bigram, 'bigrams', 'bigrams')
         vocabs['bigram'] = Vocabulary()
         vocabs['bigram'].from_dataset(datasets['train'], field_name='bigrams',
-                                  no_create_entry_dataset=[datasets['dev'], datasets['test']])
-
+                                      no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
     def concat(ins):
         chars = ins['chars']
         lexicons = ins['lexicons']
-        result = chars + list(map(lambda x:x[2],lexicons))
+        result = chars + list(map(lambda x: x[2], lexicons))
         # print('lexicons:{}'.format(lexicons))
         # print('lex_only:{}'.format(list(filter(lambda x:x[2],lexicons))))
         # print('result:{}'.format(result))
@@ -135,14 +127,12 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
 
         return pos_e
 
-
-
-    for k,v in datasets.items():
-        v.apply(concat,new_field_name='lattice')
+    for k, v in datasets.items():
+        v.apply(concat, new_field_name='lattice')
         v.set_input('lattice')
-        v.apply(get_pos_s,new_field_name='pos_s')
+        v.apply(get_pos_s, new_field_name='pos_s')
         v.apply(get_pos_e, new_field_name='pos_e')
-        v.set_input('pos_s','pos_e')
+        v.set_input('pos_s', 'pos_e')
 
     # print(list(datasets['train'][:10]['lexicons']))
     # print(list(datasets['train'][:10]['lattice']))
@@ -152,14 +142,13 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
     # print(list(datasets['train'][:10]['pos_e']))
     # exit(1208)
 
-
     word_vocab = Vocabulary()
     word_vocab.add_word_lst(w_list)
     vocabs['word'] = word_vocab
 
     lattice_vocab = Vocabulary()
-    lattice_vocab.from_dataset(datasets['train'],field_name='lattice',
-                               no_create_entry_dataset=[v for k,v in datasets.items() if k != 'train'])
+    lattice_vocab.from_dataset(datasets['train'], field_name='lattice',
+                               no_create_entry_dataset=[v for k, v in datasets.items() if k != 'train'])
     vocabs['lattice'] = lattice_vocab
     # for k,v in datasets.items():
     #     v.apply_field(lambda x:[ list(map(lambda x:x[0],p)) for p in x],'skips_l2r','skips_l2r_source')
@@ -183,47 +172,35 @@ def equip_chinese_ner_with_lexicon(datasets,vocabs,embeddings,w_list,word_embedd
     #                            list(map(lambda z:word_vocab.to_index(z),y)),x)),
     #                   'skips_r2l_word',new_field_name='skips_r2l_word')
 
-
-
-
-
     if word_embedding_path is not None:
-        word_embedding = StaticEmbedding(word_vocab,word_embedding_path,word_dropout=0)
+        word_embedding = StaticEmbedding(word_vocab, word_embedding_path, word_dropout=0)
         embeddings['word'] = word_embedding
 
     if word_char_mix_embedding_path is not None:
-        lattice_embedding = StaticEmbedding(lattice_vocab, word_char_mix_embedding_path,word_dropout=0.01,
-                                            min_freq=lattice_min_freq,only_train_min_freq=only_train_min_freq)
+        lattice_embedding = StaticEmbedding(lattice_vocab, word_char_mix_embedding_path, word_dropout=0.01,
+                                            min_freq=lattice_min_freq, only_train_min_freq=only_train_min_freq)
         embeddings['lattice'] = lattice_embedding
 
-    vocabs['char'].index_dataset(* (datasets.values()),
-                             field_name='chars', new_field_name='chars')
-    vocabs['bigram'].index_dataset(* (datasets.values()),
-                               field_name='bigrams', new_field_name='bigrams')
-    vocabs['label'].index_dataset(* (datasets.values()),
-                              field_name='target', new_field_name='target')
-    vocabs['lattice'].index_dataset(* (datasets.values()),
+    vocabs['char'].index_dataset(*(datasets.values()),
+                                 field_name='chars', new_field_name='chars')
+    vocabs['bigram'].index_dataset(*(datasets.values()),
+                                   field_name='bigrams', new_field_name='bigrams')
+    vocabs['label'].index_dataset(*(datasets.values()),
+                                  field_name='target', new_field_name='target')
+    vocabs['lattice'].index_dataset(*(datasets.values()),
                                     field_name='lattice', new_field_name='lattice')
 
-
-    return datasets,vocabs,embeddings
-
+    return datasets, vocabs, embeddings
 
 
-
-
-
-
-def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
+def from_raw_text_new(chars, vocabs, w_list, number_normalized=False):
     from fastNLP.core import DataSet
     from utils import get_bigrams
     bigrams = get_bigrams(chars)
     seq_len = len(chars)
-    target = ['O']*seq_len
-    dataset = DataSet({'chars':[chars],'bigrams':[bigrams],'seq_len':[seq_len],'target':[target]})
-    datasets = {'train':dataset}
-
-
+    target = ['O'] * seq_len
+    dataset = DataSet({'chars': [chars], 'bigrams': [bigrams], 'seq_len': [seq_len], 'target': [target]})
+    datasets = {'train': dataset}
 
     def normalize_char(inp):
         result = []
@@ -240,9 +217,9 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
         for bi in inp:
             tmp = bi
             if tmp[0].isdigit():
-                tmp = '0'+tmp[:1]
+                tmp = '0' + tmp[:1]
             if tmp[1].isdigit():
-                tmp = tmp[0]+'0'
+                tmp = tmp[0] + '0'
 
             result.append(tmp)
         return result
@@ -250,20 +227,17 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
     if number_normalized == 3:
         print('not support exit!')
         exit()
-        for k,v in datasets.items():
-            v.apply_field(normalize_char,'chars','chars')
+        for k, v in datasets.items():
+            v.apply_field(normalize_char, 'chars', 'chars')
         vocabs['char'] = Vocabulary()
         vocabs['char'].from_dataset(datasets['train'], field_name='chars',
-                                no_create_entry_dataset=[datasets['dev'], datasets['test']])
+                                    no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
-        for k,v in datasets.items():
-            v.apply_field(normalize_bigram,'bigrams','bigrams')
+        for k, v in datasets.items():
+            v.apply_field(normalize_bigram, 'bigrams', 'bigrams')
         vocabs['bigram'] = Vocabulary()
         vocabs['bigram'].from_dataset(datasets['train'], field_name='bigrams',
-                                  no_create_entry_dataset=[datasets['dev'], datasets['test']])
-
-
-
+                                      no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
     def get_skip_path(chars, w_trie):
         sentence = ''.join(chars)
@@ -271,6 +245,7 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
         # print(result)
 
         return result
+
     from V0.utils_ import Trie
     from functools import partial
     from fastNLP.core import Vocabulary
@@ -282,45 +257,42 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
     for w in w_list:
         w_trie.insert(w)
 
-
     import copy
-    for k,v in datasets.items():
-        v.apply_field(partial(get_skip_path,w_trie=w_trie),'chars','lexicons')
-        v.apply_field(copy.copy, 'chars','raw_chars')
-        v.add_seq_len('lexicons','lex_num')
-        v.apply_field(lambda x:list(map(lambda y: y[0], x)), 'lexicons', 'lex_s')
+    for k, v in datasets.items():
+        v.apply_field(partial(get_skip_path, w_trie=w_trie), 'chars', 'lexicons')
+        v.apply_field(copy.copy, 'chars', 'raw_chars')
+        v.add_seq_len('lexicons', 'lex_num')
+        v.apply_field(lambda x: list(map(lambda y: y[0], x)), 'lexicons', 'lex_s')
         v.apply_field(lambda x: list(map(lambda y: y[1], x)), 'lexicons', 'lex_e')
-
 
     if number_normalized == 1:
         print('not support exit!')
         exit()
-        for k,v in datasets.items():
-            v.apply_field(normalize_char,'chars','chars')
+        for k, v in datasets.items():
+            v.apply_field(normalize_char, 'chars', 'chars')
         vocabs['char'] = Vocabulary()
         vocabs['char'].from_dataset(datasets['train'], field_name='chars',
-                                no_create_entry_dataset=[datasets['dev'], datasets['test']])
+                                    no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
     if number_normalized == 2:
         print('not support exit!')
         exit()
-        for k,v in datasets.items():
-            v.apply_field(normalize_char,'chars','chars')
+        for k, v in datasets.items():
+            v.apply_field(normalize_char, 'chars', 'chars')
         vocabs['char'] = Vocabulary()
         vocabs['char'].from_dataset(datasets['train'], field_name='chars',
-                                no_create_entry_dataset=[datasets['dev'], datasets['test']])
+                                    no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
-        for k,v in datasets.items():
-            v.apply_field(normalize_bigram,'bigrams','bigrams')
+        for k, v in datasets.items():
+            v.apply_field(normalize_bigram, 'bigrams', 'bigrams')
         vocabs['bigram'] = Vocabulary()
         vocabs['bigram'].from_dataset(datasets['train'], field_name='bigrams',
-                                  no_create_entry_dataset=[datasets['dev'], datasets['test']])
-
+                                      no_create_entry_dataset=[datasets['dev'], datasets['test']])
 
     def concat(ins):
         chars = ins['chars']
         lexicons = ins['lexicons']
-        result = chars + list(map(lambda x:x[2],lexicons))
+        result = chars + list(map(lambda x: x[2], lexicons))
         # print('lexicons:{}'.format(lexicons))
         # print('lex_only:{}'.format(list(filter(lambda x:x[2],lexicons))))
         # print('result:{}'.format(result))
@@ -340,14 +312,12 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
 
         return pos_e
 
-
-
-    for k,v in datasets.items():
-        v.apply(concat,new_field_name='lattice')
+    for k, v in datasets.items():
+        v.apply(concat, new_field_name='lattice')
         v.set_input('lattice')
-        v.apply(get_pos_s,new_field_name='pos_s')
+        v.apply(get_pos_s, new_field_name='pos_s')
         v.apply(get_pos_e, new_field_name='pos_e')
-        v.set_input('pos_s','pos_e')
+        v.set_input('pos_s', 'pos_e')
 
     # print(list(datasets['train'][:10]['lexicons']))
     # print(list(datasets['train'][:10]['lattice']))
@@ -356,8 +326,6 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
     # print(list(datasets['train'][:10]['pos_s']))
     # print(list(datasets['train'][:10]['pos_e']))
     # exit(1208)
-
-
 
     # for k,v in datasets.items():
     #     v.apply_field(lambda x:[ list(map(lambda x:x[0],p)) for p in x],'skips_l2r','skips_l2r_source')
@@ -381,20 +349,13 @@ def from_raw_text_new(chars,vocabs,w_list,number_normalized=False):
     #                            list(map(lambda z:word_vocab.to_index(z),y)),x)),
     #                   'skips_r2l_word',new_field_name='skips_r2l_word')
 
-
-
-
-
-
-
-    vocabs['char'].index_dataset(* (datasets.values()),
-                             field_name='chars', new_field_name='chars')
-    vocabs['bigram'].index_dataset(* (datasets.values()),
-                               field_name='bigrams', new_field_name='bigrams')
-    vocabs['label'].index_dataset(* (datasets.values()),
-                              field_name='target', new_field_name='target')
-    vocabs['lattice'].index_dataset(* (datasets.values()),
+    vocabs['char'].index_dataset(*(datasets.values()),
+                                 field_name='chars', new_field_name='chars')
+    vocabs['bigram'].index_dataset(*(datasets.values()),
+                                   field_name='bigrams', new_field_name='bigrams')
+    vocabs['label'].index_dataset(*(datasets.values()),
+                                  field_name='target', new_field_name='target')
+    vocabs['lattice'].index_dataset(*(datasets.values()),
                                     field_name='lattice', new_field_name='lattice')
 
-
-    return datasets,vocabs
+    return datasets, vocabs

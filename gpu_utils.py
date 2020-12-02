@@ -99,9 +99,13 @@ def getGPUs():
                         display_active, temp_gpu))
     return GPUs  # (deviceIds, gpuUtil, memUtil)
 
+
 def getAvailabilityGPU(GPUs, maxLoad=0.5, maxMemory=0.5, memoryFree=0, includeNan=False, excludeID=[], excludeUUID=[]):
     # Determine, which GPUs are available
-    GPUavailability = [1 if (gpu.memoryFree>=memoryFree) and (gpu.load < maxLoad or (includeNan and math.isnan(gpu.load))) and (gpu.memoryUtil < maxMemory  or (includeNan and math.isnan(gpu.memoryUtil))) and ((gpu.id not in excludeID) and (gpu.uuid not in excludeUUID)) else 0 for gpu in GPUs]
+    GPUavailability = [
+        1 if (gpu.memoryFree >= memoryFree) and (gpu.load < maxLoad or (includeNan and math.isnan(gpu.load))) and (
+                    gpu.memoryUtil < maxMemory or (includeNan and math.isnan(gpu.memoryUtil))) and (
+                         (gpu.id not in excludeID) and (gpu.uuid not in excludeUUID)) else 0 for gpu in GPUs]
     gpus = [gpu for gpu, use in zip(GPUs, GPUavailability) if use]
     return gpus
 

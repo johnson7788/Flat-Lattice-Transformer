@@ -16,6 +16,7 @@ from fastNLP.embeddings.contextual_embedding import ContextualEmbedding
 from fastNLP.embeddings.bert_embedding import _WordBertModel
 from fastNLP.io.file_utils import PRETRAINED_BERT_MODEL_DIR
 
+
 class StaticEmbedding(TokenEmbedding):
     """
     StaticEmbedding组件. 给定预训练embedding的名称或路径，根据vocab从embedding中抽取相应的数据(只会将出现在vocab中的词抽取出来，
@@ -380,7 +381,7 @@ class BertEmbedding(ContextualEmbedding):
         words = self.drop_word(words)
         outputs = self._get_sent_reprs(words)
         if outputs is not None:
-            if self.dropout_p >1e-5:
+            if self.dropout_p > 1e-5:
                 return self.dropout(outputs)
             else:
                 return outputs

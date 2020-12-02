@@ -1,22 +1,25 @@
 import collections
 from fastNLP import cache_results
-def get_skip_path(chars,w_trie):
+
+
+def get_skip_path(chars, w_trie):
     sentence = ''.join(chars)
     result = w_trie.get_lexicon(sentence)
 
     return result
 
+
 # @cache_results(_cache_fp='cache/get_skip_path_trivial',_refresh=True)
-def get_skip_path_trivial(chars,w_list):
+def get_skip_path_trivial(chars, w_list):
     chars = ''.join(chars)
     w_set = set(w_list)
     result = []
     # for i in range(len(chars)):
     #     result.append([])
-    for i in range(len(chars)-1):
-        for j in range(i+2,len(chars)+1):
+    for i in range(len(chars) - 1):
+        for j in range(i + 2, len(chars) + 1):
             if chars[i:j] in w_set:
-                result.append([i,j-1,chars[i:j]])
+                result.append([i, j - 1, chars[i:j]])
 
     return result
 
@@ -26,11 +29,12 @@ class TrieNode:
         self.children = collections.defaultdict(TrieNode)
         self.is_w = False
 
+
 class Trie:
     def __init__(self):
         self.root = TrieNode()
 
-    def insert(self,w):
+    def insert(self, w):
 
         current = self.root
         for c in w:
@@ -38,7 +42,7 @@ class Trie:
 
         current.is_w = True
 
-    def search(self,w):
+    def search(self, w):
         '''
 
         :param w:
@@ -60,7 +64,7 @@ class Trie:
         else:
             return 0
 
-    def get_lexicon(self,sentence):
+    def get_lexicon(self, sentence):
         result = []
         for i in range(len(sentence)):
             current = self.root
@@ -70,17 +74,20 @@ class Trie:
                     break
 
                 if current.is_w:
-                    result.append([i,j,sentence[i:j+1]])
+                    result.append([i, j, sentence[i:j + 1]])
 
         return result
+
 
 from fastNLP.core.field import Padder
 import numpy as np
 import torch
 from collections import defaultdict
+
+
 class LatticeLexiconPadder(Padder):
 
-    def __init__(self, pad_val=0, pad_val_dynamic=False,dynamic_offset=0, **kwargs):
+    def __init__(self, pad_val=0, pad_val_dynamic=False, dynamic_offset=0, **kwargs):
         '''
 
         :param pad_val:
@@ -95,16 +102,16 @@ class LatticeLexiconPadder(Padder):
         # 与autoPadder中 dim=2 的情况一样
         max_len = max(map(len, contents))
 
-        max_len = max(max_len,1)#avoid 0 size dim which causes cuda wrong
+        max_len = max(max_len, 1)  # avoid 0 size dim which causes cuda wrong
 
         max_word_len = max([max([len(content_ii) for content_ii in content_i]) for
                             content_i in contents])
 
-        max_word_len = max(max_word_len,1)
+        max_word_len = max(max_word_len, 1)
         if self.pad_val_dynamic:
             # print('pad_val_dynamic:{}'.format(max_len-1))
 
-            array = np.full((len(contents), max_len, max_word_len), max_len-1+self.dynamic_offset,
+            array = np.full((len(contents), max_len, max_word_len), max_len - 1 + self.dynamic_offset,
                             dtype=field_ele_dtype)
 
         else:
@@ -116,9 +123,11 @@ class LatticeLexiconPadder(Padder):
 
         return array
 
+
 from fastNLP.core.metrics import MetricBase
 
-def get_yangjie_bmeso(label_list,ignore_labels=None):
+
+def get_yangjie_bmeso(label_list, ignore_labels=None):
     def get_ner_BMESO_yj(label_list):
         def reverse_style(input_string):
             target_position = input_string.index('[')
@@ -190,11 +199,13 @@ def get_yangjie_bmeso(label_list,ignore_labels=None):
         e += 1
 
         return (span_type, (b, e))
+
     yj_form = get_ner_BMESO_yj(label_list)
     # print('label_list:{}'.format(label_list))
     # print('yj_from:{}'.format(yj_form))
-    fastNLP_form = list(map(transform_YJ_to_fastNLP,yj_form))
+    fastNLP_form = list(map(transform_YJ_to_fastNLP, yj_form))
     return fastNLP_form
+
 
 class SpanFPreRecMetric_YJ(MetricBase):
     r"""
@@ -238,11 +249,12 @@ class SpanFPreRecMetric_YJ(MetricBase):
     :param float beta: f_beta分数， :math:`f_{beta} = \frac{(1 + {beta}^{2})*(pre*rec)}{({beta}^{2}*pre + rec)}` .
         常用为beta=0.5, 1, 2. 若为0.5则精确率的权重高于召回率；若为1，则两者平等；若为2，则召回率权重高于精确率。
     """
+
     def __init__(self, tag_vocab, pred=None, target=None, seq_len=None, encoding_type='bio', ignore_labels=None,
                  only_gross=True, f_type='micro', beta=1):
         from fastNLP.core import Vocabulary
-        from fastNLP.core.metrics import _bmes_tag_to_spans,_bio_tag_to_spans,\
-            _bioes_tag_to_spans,_bmeso_tag_to_spans
+        from fastNLP.core.metrics import _bmes_tag_to_spans, _bio_tag_to_spans, \
+            _bioes_tag_to_spans, _bmeso_tag_to_spans
         from collections import defaultdict
 
         encoding_type = encoding_type.lower()
@@ -400,7 +412,3 @@ class SpanFPreRecMetric_YJ(MetricBase):
         f = (1 + self.beta_square) * pre * rec / (self.beta_square * pre + rec + 1e-13)
 
         return f, pre, rec
-
-
-
-
