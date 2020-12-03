@@ -16,7 +16,8 @@ fitlog: 0.9.13
 你可以在 [这里](https://fastnlp.readthedocs.io/zh/latest/) 深入了解 FastNLP 这个库.
 
 # 微博数据集下载
-https://github.com/hltcoe/golden-horse/tree/master/data
+http://download.fastnlp.top/dataset/weibo_NER.zip
+http://download.fastnlp.top/dataset/MSRA_NER.zip
 
 # 数据集格式说明,  参照V0/data/WeiboNER/weiboNER_2nd_conll.test
 ```buildoutcfg
