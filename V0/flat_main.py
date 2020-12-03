@@ -3,7 +3,7 @@ import fitlog
 use_fitlog = True
 if not use_fitlog:
     fitlog.debug()
-fitlog.set_log_dir('logs')
+fitlog.set_log_dir('../logs')
 load_dataset_seed = 100
 fitlog.add_hyper(load_dataset_seed, 'load_dataset_seed')
 fitlog.set_rng_seed(load_dataset_seed)
@@ -65,7 +65,7 @@ parser.add_argument('--only_lexicon_in_train', default=False)
 
 parser.add_argument('--word_min_freq', default=1, type=int)
 
-# hyper of training
+# 训练超参数
 # parser.add_argument('--early_stop',default=40,type=int)
 parser.add_argument('--epoch', default=100, type=int)
 parser.add_argument('--batch', default=10, type=int)
@@ -81,7 +81,7 @@ parser.add_argument('--norm_lattice_embed', default=True)
 
 parser.add_argument('--warmup', default=0.1, type=float)
 
-# hyper of model
+# 模型超参数
 parser.add_argument('--use_bert', type=int)
 parser.add_argument('--model', default='transformer', help='lstm|transformer')
 parser.add_argument('--lattice', default=1, type=int)
@@ -100,10 +100,10 @@ parser.add_argument('--v_proj', default=True)
 parser.add_argument('--r_proj', default=True)
 
 parser.add_argument('--attn_ff', default=False)
-
+#使用相对位置编码还是绝对位置编码
 # parser.add_argument('--rel_pos', default=False)
-parser.add_argument('--use_abs_pos', default=False)
-parser.add_argument('--use_rel_pos', default=True)
+parser.add_argument('--use_abs_pos', default=False, help="绝对位置编码")
+parser.add_argument('--use_rel_pos', default=True, help="相对位置编码")
 # 相对位置和绝对位置不是对立的，可以同时使用
 parser.add_argument('--rel_pos_shared', default=True)
 parser.add_argument('--add_pos', default=False)
@@ -124,7 +124,7 @@ parser.add_argument('--four_pos_fusion_shared', default=True, help='是不是要
 
 parser.add_argument('--pre', default='')
 parser.add_argument('--post', default='an')
-
+#是否覆盖参数给定的所有dropout
 over_all_dropout = -1
 parser.add_argument('--embed_dropout_before_pos', default=False)
 parser.add_argument('--embed_dropout', default=0.5, type=float)
@@ -144,7 +144,7 @@ parser.add_argument('--dataset', default='weibo', help='weibo|resume|ontonote|ms
 args = parser.parse_args()
 if args.ff_dropout_2 < 0:
     args.ff_dropout_2 = args.ff_dropout
-
+#是否覆盖参数给定的所有dropout
 if over_all_dropout > 0:
     args.embed_dropout = over_all_dropout
     args.output_dropout = over_all_dropout
@@ -155,8 +155,9 @@ if over_all_dropout > 0:
 
 if args.lattice and args.use_rel_pos and args.update_every == 1:
     args.train_clip = True
-
+# 获取北京时间
 now_time = get_peking_time()
+#自定义日志目录和级别
 logger.add_file('log/{}'.format(now_time), level='info')
 if args.test_batch == -1:
     args.test_batch = args.batch // 2
@@ -178,7 +179,7 @@ refresh_data = True
 # 打印argparse参数
 for k, v in args.__dict__.items():
     print_info('{}:{}'.format(k, v))
-
+#设置一个临时缓存文件的名字
 raw_dataset_cache_name = os.path.join('cache', args.dataset +
                                       '_trainClip:{}'.format(args.train_clip)
                                       + 'bgminfreq_{}'.format(args.bigram_min_freq)

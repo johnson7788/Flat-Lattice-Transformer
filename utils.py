@@ -326,7 +326,13 @@ def get_bigrams(words):
 
 
 def print_info(*inp, islog=True, sep=' '):
-    from fastNLP import logger
+    """
+    打印日志或者写到日志文件
+    :param inp:
+    :param islog:
+    :param sep:
+    :return:
+    """
     if islog:
         print(*inp, sep=sep)
     else:
@@ -391,6 +397,10 @@ def get_crf_zero_init(label_size, include_start_end_trans=False, allowed_transit
 
 
 def get_peking_time():
+    """
+    获取北京时间
+    :return:
+    """
     import time
     import datetime
     import pytz

@@ -28,6 +28,18 @@ https://github.com/hltcoe/golden-horse/tree/master/data
       
       从[Baidu Pan](https://pan.baidu.com/s/1luy-GlTdqqvJ3j-A4FcIOw) 下载词的embedding (sgns.merge.bigram.bz2)(ls)
 
+```buildoutcfg
+embedding 文件说明
+joint4.all.b10c1.2h.iter17.mbichar
+joint4.all.b10c1.2h.iter17.pmodel
+joint4.all.b10c1.2h.iter17.mchar
+sgns.merge.word.bz2   
+gigaword_chn.all.a2b.uni.ite50.vec       # unigram 的单词embedding
+gigaword_chn.all.a2b.bi.ite50.vec        # bigram 的单词embedding
+ctb.50d.vec                              # 50维度的embedding
+ctb.bilstm.joint4.model
+```
+
 2. 修改 `paths.py` 来添加预训练的 embedding 和你的数据集
 3. 运行下面的代码进行预处理
 

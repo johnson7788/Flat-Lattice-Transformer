@@ -401,6 +401,18 @@ def load_msra_ner_1(path, char_embedding_path=None, bigram_embedding_path=None, 
 @cache_results(_cache_fp='cache/weiboNER_uni+bi', _refresh=False)
 def load_weibo_ner(path, unigram_embedding_path=None, bigram_embedding_path=None, index_token=True,
                    char_min_freq=1, bigram_min_freq=1, only_train_min_freq=0, char_word_dropout=0.01):
+    """
+    加载微博语料，并缓存数据
+    :param path: 微博数据集的路径，文件夹
+    :param unigram_embedding_path: 如果存在，那么使用unigram embedding
+    :param bigram_embedding_path: 如果存在，使用bigram embedding，可以和unigram同时使用
+    :param index_token:
+    :param char_min_freq:
+    :param bigram_min_freq:
+    :param only_train_min_freq:
+    :param char_word_dropout:
+    :return:
+    """
     from fastNLP.io.loader import ConllLoader
     from utils import get_bigrams
 
@@ -411,9 +423,9 @@ def load_weibo_ner(path, unigram_embedding_path=None, bigram_embedding_path=None
 
     # print(datasets['train'][:5])
 
-    train_path = os.path.join(path, 'weiboNER_2nd_conll.train_deseg')
-    dev_path = os.path.join(path, 'weiboNER_2nd_conll.dev_deseg')
-    test_path = os.path.join(path, 'weiboNER_2nd_conll.test_deseg')
+    train_path = os.path.join(path, 'weiboNER_2nd_conll.train')
+    dev_path = os.path.join(path, 'weiboNER_2nd_conll.dev')
+    test_path = os.path.join(path, 'weiboNER_2nd_conll.test')
 
     paths = {}
     paths['train'] = train_path
