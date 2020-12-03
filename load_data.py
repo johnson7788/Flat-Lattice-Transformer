@@ -415,8 +415,8 @@ def load_weibo_ner(path, unigram_embedding_path=None, bigram_embedding_path=None
     """
     from fastNLP.io.loader import ConllLoader
     from utils import get_bigrams
-
-    loader = ConllLoader(['chars', 'target'])
+    #数据集的headers是chars和target
+    loader = ConllLoader(headers=['chars', 'target'])
     # bundle = loader.load(path)
     #
     # datasets = bundle.datasets

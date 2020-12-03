@@ -18,6 +18,30 @@ fitlog: 0.9.13
 # 微博数据集下载
 https://github.com/hltcoe/golden-horse/tree/master/data
 
+# 数据集格式说明,  参照V0/data/WeiboNER/weiboNER_2nd_conll.test
+```buildoutcfg
+一0	O               #一 表示这个字，0表示的是"一节课"这个单词的第一个位置，O表示的是这是一个负样本
+节1	O
+课2	O
+的0	O
+时0	O
+间1	O
+真0	O
+心1	O
+感0	O
+动1	O
+了0	O
+李0	B-PER.NAM               # 李是"李开复"的第一个字，所以是0， B-PER.NAM 是人名的类型，开头
+开1	I-PER.NAM
+复2	I-PER.NAM
+感0	O
+动1	O
+                            # 每条数据用空格分隔
+xxxxx
+xxxxx
+xxxxx
+```
+
 如何运行？
 ====
 1. 请下载预训练的embedding
@@ -31,13 +55,13 @@ https://github.com/hltcoe/golden-horse/tree/master/data
 ```buildoutcfg
 embedding 文件说明
 joint4.all.b10c1.2h.iter17.mbichar
-joint4.all.b10c1.2h.iter17.pmodel
+joint4.all.b10c1.2h.iter17.pmodel       模型？
 joint4.all.b10c1.2h.iter17.mchar
-sgns.merge.word.bz2   
+sgns.merge.word.bz2   --> 解压出
 gigaword_chn.all.a2b.uni.ite50.vec       # unigram 的单词embedding
 gigaword_chn.all.a2b.bi.ite50.vec        # bigram 的单词embedding
 ctb.50d.vec                              # 50维度的embedding
-ctb.bilstm.joint4.model
+ctb.bilstm.joint4.model                   # bilstm 模型
 ```
 
 2. 修改 `paths.py` 来添加预训练的 embedding 和你的数据集
