@@ -79,6 +79,8 @@ cd V0 (without Bert) / V1 (with Bert)
 
 # 运行
 python flat_main.py --dataset <dataset_name> (ontonotes, msra, weibo or resume)
+# 使用CPU运行
+python flat_main.py  --dataset weibo --device cpu
 ```
 
 如果你想方便地记录和观察实验结果, 你可以使用fitlog:
