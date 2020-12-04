@@ -423,9 +423,9 @@ def load_weibo_ner(path, unigram_embedding_path=None, bigram_embedding_path=None
 
     # print(datasets['train'][:5])
 
-    train_path = os.path.join(path, 'weiboNER_2nd_conll.train')
-    dev_path = os.path.join(path, 'weiboNER_2nd_conll.dev')
-    test_path = os.path.join(path, 'weiboNER_2nd_conll.test')
+    train_path = os.path.join(path, 'train.conll')
+    dev_path = os.path.join(path, 'dev.conll')
+    test_path = os.path.join(path, 'test.conll')
 
     paths = {}
     paths['train'] = train_path

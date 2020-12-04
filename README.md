@@ -19,25 +19,26 @@ fitlog: 0.9.13
 http://download.fastnlp.top/dataset/weibo_NER.zip
 http://download.fastnlp.top/dataset/MSRA_NER.zip
 
-# 数据集格式说明,  参照V0/data/WeiboNER/weiboNER_2nd_conll.test
+# 数据集格式说明,BIO标注法,参照V0/data/WeiboNER/test.conll
 ```buildoutcfg
-一0	O               #一 表示这个字，0表示的是"一节课"这个单词的第一个位置，O表示的是这是一个负样本
-节1	O
-课2	O
-的0	O
-时0	O
-间1	O
-真0	O
-心1	O
-感0	O
-动1	O
-了0	O
-李0	B-PER.NAM               # 李是"李开复"的第一个字，所以是0， B-PER.NAM 是人名的类型，开头
-开1	I-PER.NAM
-复2	I-PER.NAM
-感0	O
-动1	O
-                            # 每条数据用空格分隔
+一	O                       #一 表示这个字，O表示的是这是一个负样本
+节	O
+课	O
+的	O
+时	O
+间	O
+真	O
+心	O
+感	O
+动	O
+了	O
+李	B-PER.NAM       #李是"李开复"的第一个字，， B-PER.NAM 是人名的类型，开头
+开	I-PER.NAM
+复	I-PER.NAM
+感	O
+动	O                   
+
+# 每条数据用空格分隔
 xxxxx
 xxxxx
 xxxxx

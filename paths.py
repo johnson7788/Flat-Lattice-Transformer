@@ -1,5 +1,5 @@
 yangjie_rich_pretrain_unigram_path = 'data/gigaword_chn.all.a2b.uni.ite50.vec'
-yangjie_rich_pretrain_bigram_path = '/remote-home/xnli/data/pretrain/chinese/gigaword_chn.all.a2b.bi.ite50.vec'
+yangjie_rich_pretrain_bigram_path = 'data/gigaword_chn.all.a2b.bi.ite50.vec'
 yangjie_rich_pretrain_word_path = 'data/ctb.50d.vec'
 
 # 输出单词和字的混合的文本的位置
