@@ -15,6 +15,31 @@ fitlog: 0.9.13
 ```
 你可以在 [这里](https://fastnlp.readthedocs.io/zh/latest/) 深入了解 FastNLP 这个库.
 
+#目录结构
+```buildoutcfg
+V0 $ tree
+.
+├── add_lattice.py
+├── cache      #生成的数据集的缓存，可以删除
+├── data
+│   ├── WeiboNER                #下载数据集放这里
+│   │   ├── dev.conll
+│   │   ├── test.conll
+│   │   └── train.conll
+│   ├── ctb.50d.vec                             #一些词嵌入，暂时放着，在paths.py中指定修改位置
+│   ├── gigaword_chn.all.a2b.bi.ite50.vec
+│   ├── gigaword_chn.all.a2b.uni.ite50.vec
+│   └── sgns.merge.word
+├── flat_main.py
+├── log             #存放生成的日志
+├── models.py
+├── modules.py
+├── output
+│   └── yangjie_word_char_mix.txt      #存储混合后的词向量，运行preprocess.py后生成
+└── utils_.py
+
+```
+
 # 微博数据集下载
 http://download.fastnlp.top/dataset/weibo_NER.zip
 http://download.fastnlp.top/dataset/MSRA_NER.zip
