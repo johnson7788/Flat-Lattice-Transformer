@@ -12,7 +12,18 @@ PyTorch: 1.2.0
 FastNLP: 0.5.0
 Numpy: 1.16.4
 fitlog: 0.9.13
+注意FastNLP 0.5.0有一个小bug, 225-228行，使用cpu的时候，会报错，简单注释掉，或改一下
+lib/python3.7/site-packages/fastNLP/core/utils.py
+    # else:
+    #     if not torch.cuda.is_available() and (
+    #             device != 'cpu' or (isinstance(device, torch.device) and device.type != 'cpu')):
+    #         raise ValueError("There is no usable gpu. set `device` as `cpu` or `None`.")
+       改成这个，或注释掉
+        if not torch.cuda.is_available() and ((isinstance(device, str) and device!='cpu') or
+         (isinstance(device, torch.device) and device.type != 'cpu')):
+            raise ValueError("There is no usable gpu. set `device` as `cpu` or `None`.")
 ```
+
 你可以在 [这里](https://fastnlp.readthedocs.io/zh/latest/) 深入了解 FastNLP 这个库.
 
 #目录结构
