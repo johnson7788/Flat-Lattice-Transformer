@@ -53,6 +53,8 @@ V0 $ tree
 
 # 微博数据集下载
 http://download.fastnlp.top/dataset/weibo_NER.zip
+
+# MSRA数据集
 http://download.fastnlp.top/dataset/MSRA_NER.zip
 
 # 数据集格式说明,BIO标注法,参照V0/data/WeiboNER/test.conll
