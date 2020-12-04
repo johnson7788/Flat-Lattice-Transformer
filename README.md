@@ -57,7 +57,7 @@ xxxxx
 ```buildoutcfg
 embedding 文件说明
 joint4.all.b10c1.2h.iter17.mbichar
-joint4.all.b10c1.2h.iter17.pmodel       模型？
+joint4.all.b10c1.2h.iter17.pmodel       
 joint4.all.b10c1.2h.iter17.mchar
 sgns.merge.word.bz2   --> 解压出
 gigaword_chn.all.a2b.uni.ite50.vec       # unigram 的单词embedding
